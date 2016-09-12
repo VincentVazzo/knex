@@ -560,10 +560,14 @@ assign(Builder.prototype, {
   // Only allow a single "limit" to be set for the current query.
   limit(value) {
     const val = parseInt(value, 10)
-    if (isNaN(val)) {
-      helpers.warn('A valid integer must be provided to limit')
-    } else {
+    if(!isNan(val)) {
       this._single.limit = val;
+    }
+    else if((this.client.driverName == 'pg') && (value.toUpperCase() == 'ALL')) {
+      this._single.limit = value;
+    }
+    else {
+      helpers.warn('A valid integer must be provided to limit')
     }
     return this;
   },
